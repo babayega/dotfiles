@@ -21,6 +21,23 @@ Themes are [Catppuccin Mocha](https://catppuccin.com) across all three tools.
 └── shell/.zshrc
 ```
 
+## Layout: this repo is the only source of truth
+
+`~/.config/{nvim,tmux,ghostty}` and `~/.zshrc` are **symlinks into this repo**,
+not copies. Edit here, and the running setup changes with it:
+
+```sh
+$ ls -l ~/.config/tmux
+lrwxr-xr-x  ~/.config/tmux -> ~/dotfiles/tmux
+```
+
+Only two things are deliberately *not* tracked:
+
+| Path | Why |
+| --- | --- |
+| `tmux/plugins/` | ~6 MB of TPM-managed checkouts, recreated by `prefix + I` |
+| `tmux/cheatsheet.md` | generated; embeds machine-specific absolute paths |
+
 ## Install
 
 ```sh
