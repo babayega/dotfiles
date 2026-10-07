@@ -1,0 +1,4 @@
+# TPM-managed plugin checkouts live in plugins/*.
+# They are recreated from the @plugin / @manual_plugins lists in tmux.conf,
+# so tracking them would add ~6 MB of vendored git repos to every commit.
+plugins/

@@ -1,0 +1,2 @@
+# lazy.nvim runtime state lives in stdpath("data")/lazy, not here.
+# This file exists to make lazy-lock.json (the rollback safety net) tracked.

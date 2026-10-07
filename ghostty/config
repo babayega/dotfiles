@@ -1,0 +1,134 @@
+# ──────────────────────────────────────────
+#  Ghostty Config — Layer 4
+# ──────────────────────────────────────────
+
+# ─── Theme ───────────────────────────────
+# NOT a light/dark pair, even though Ghostty supports one:
+#   theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+#
+# tmux 3.6a has no `set -s theme` and exposes no format variable for the
+# terminal's actual background colour, so the status bar cannot learn that the
+# terminal switched to Latte. The result is a dark Mocha bar sitting on a
+# light terminal. That is worse than not having the feature.
+# `set -s theme` arrives in tmux 3.8; revisit then.
+theme = Catppuccin Mocha
+
+# ─── Font ────────────────────────────────
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+# JetBrains Mono strokes are thin; thicken them so they hold up against the
+# blurred translucent background instead of washing out.
+font-thicken = true
+
+# ─── Window ──────────────────────────────
+window-padding-x = 12
+window-padding-y = 8
+window-padding-balance = true
+window-save-state = always
+
+# ─── Cursor ──────────────────────────────
+cursor-style = bar
+cursor-style-blink = true
+adjust-cursor-thickness = 2
+
+# ─── Shell ───────────────────────────────
+shell-integration = zsh
+
+# ─── Transparency ────────────────────────
+background-opacity = 0.85
+# Modern key is `background-blur`; `background-blur-radius` is a deprecated
+# alias that still works. Kept as `background-blur` so it is not silently
+# dropped in a future release.
+# macOS 26 exposes a native "liquid glass" material. Letting the OS compositor
+# do the blurring should be cheaper than Ghostty's own implementation, and it
+# looks native on Tahoe. Both values validate on 1.3.1.
+#
+# To A/B against the old numeric blur, change this to 20 and hit
+# cmd+shift+r to reload; there is no runtime toggle for blur.
+background-blur = macos-glass-regular
+# At 0.85 opacity the status bars drawn by tmux and Neovim repaint an opaque
+# background and ignore the transparency. This makes those cells respect it.
+background-opacity-cells = true
+
+# ─── Readability ─────────────────────────
+# The 0.85 translucent background lowers effective text contrast. These put a
+# floor back under it.
+minimum-contrast = 3
+faint-opacity = 0.7
+bold-color = bright
+alpha-blending = linear-corrected
+
+# ─── macOS ───────────────────────────────
+macos-option-as-alt = true
+# `tabs` puts a tab bar in the titlebar, which shows whatever title the
+# foreground process exports. Inside tmux that is always the session name
+# (tmux sets the outer title to the session name by default), so it renders
+# as a permanent "tmux" bar across the top. `transparent` is the default and
+# is what this setup looked like before.
+#   native      - standard macOS titlebar with a centred title
+#   transparent - no bar, content extends under it (default)
+#   tabs        - tab bar merged into the titlebar
+#   hidden      - no titlebar at all
+macos-titlebar-style = transparent
+macos-titlebar-proxy-icon = hidden
+# macOS 26 (Tahoe) renders the Secure Keyboard Entry indicator on the main
+# thread every frame, which causes lag and multi-second freezes. The indicator
+# is the cost, not secure input itself, so disabling just the indicator keeps
+# the actual `sudo` protection. Requires a full Ghostty restart to apply.
+macos-secure-input-indication = false
+
+# ─── Quick Terminal ──────────────────────
+# Reuse the current tab instead of opening a second one, and give the
+# dropdown a little more time to animate so it does not flash.
+quick-terminal-space-behavior = move
+quick-terminal-animation-duration = 0.3
+quick-terminal-autohide = true
+
+# Cmd+` toggles a dropdown terminal from the top (works globally).
+# NOTE: `global:` binds need macOS Privacy & Security > Accessibility. If
+# that permission is ever revoked, 1.3.1 leaks a Mach port per second and the
+# process is eventually killed. Verify the permission is still granted after
+# a macOS upgrade — grants are known not to migrate.
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# ─── Keyboard ───────────────────────────
+# Ghostty-native copy mode, so you can select and copy without entering tmux.
+# Cmd+K enters, y copies, Esc or v leaves. Select-all rather than a free-form
+# selection: 1.3.1 has no `start_selection` / `copy_selection_and_cancel`
+# actions (those landed after this release).
+keybind = cmd+k=activate_key_table:copymode
+keybind = copymode/v=select_all
+keybind = copymode/y=copy_to_clipboard
+keybind = copymode/escape=deactivate_key_table
+keybind = copymode/catch_all=ignore
+
+# ─── Search ─────────────────────────────
+keybind = cmd+f=start_search
+keybind = cmd+g=navigate_search:next
+keybind = shift+cmd+g=navigate_search:previous
+keybind = performable:cmd+e=search_selection
+keybind = escape=end_search
+
+# ─── Clipboard ───────────────────────────
+copy-on-select = clipboard
+clipboard-paste-protection = true
+clipboard-trim-trailing-spaces = true
+
+# ─── Links ───────────────────────────────
+link-url = true
+link-previews = osc8
+
+# ─── Notifications ───────────────────────
+# Uses OSC 133, so it works through the zsh shell integration above.
+notify-on-command-finish = unfocused
+notify-on-command-finish-action = no-bell,notify
+notify-on-command-finish-after = 30s
+
+# ─── Cursor position in prompt ───────────
+cursor-click-to-move = true
+
+# ─── Scrollback ──────────────────────────
+scrollback-limit = 10000000
+
+# ─── Misc ────────────────────────────────
+confirm-close-surface = false

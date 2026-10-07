@@ -1,0 +1,8 @@
+# Generated: contains machine-specific absolute paths (tmux embeds them in its
+# own key bindings). Run `cheat-refresh` to rebuild after install.
+tmux/cheatsheet.md
+
+# Backups and editor noise
+*.bak
+*.bak-*
+.DS_Store
