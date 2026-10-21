@@ -107,7 +107,19 @@ keybind = cmd+f=start_search
 keybind = cmd+g=navigate_search:next
 keybind = shift+cmd+g=navigate_search:previous
 keybind = performable:cmd+e=search_selection
-keybind = escape=end_search
+# Escape must NOT be bound globally.
+#
+# `escape=end_search` fires in every application whenever Escape is pressed.
+# Outside an active search the action does nothing but the key press is still
+# consumed, so Escape never reaches the program underneath - which broke
+# leaving insert mode in nvim, and produced zero bytes in a raw /bin/cat -v
+# capture (typing "a", ESC, "b" yielded only "ab").
+#
+# This was my error: I added it as a copy of the search keybind example, and it
+# was never scoped to the search key table. `unbind` removes the binding so
+# Escape passes straight through; Ghostty still exits search on Escape via its
+# own handling of the search surface.
+keybind = escape=unbind
 
 # ─── Clipboard ───────────────────────────
 copy-on-select = clipboard
